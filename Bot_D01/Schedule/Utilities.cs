@@ -64,7 +64,7 @@ namespace Bot_D01.Schedule
 
         public static async Task saveTokenAsync(string userId, LoginInfor userTokenInfo)
         {
-            string directoryPath = @"AppData/Users";
+            string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"AppData/Users");
             string filePath = Path.Combine(directoryPath, "listUserInfor.json");
 
             // Tạo thư mục nếu chưa tồn tại
