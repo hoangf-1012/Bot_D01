@@ -68,9 +68,9 @@ namespace Bot_D01.Schedule
             string filePath = Path.Combine(directoryPath, "listUserInfor.json");
 
             // Tạo thư mục nếu chưa tồn tại
-            if (!Directory.Exists(filePath))
+            if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(directoryPath);
             }
 
             // Đọc file JSON nếu đã tồn tại
