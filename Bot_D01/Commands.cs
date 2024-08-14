@@ -64,7 +64,6 @@ namespace Bot_D01
 
                 await Schedule.Utilities.saveScheduleAsync($"{user.Username}", s);
 
-                await Schedule.Utilities.RemoveExcelFile(Path.Combine(Schedule.Utilities.getPath(), $"{loginInfo.userName}.xls"));
 
                 var embed = new DiscordEmbedBuilder
                 {
