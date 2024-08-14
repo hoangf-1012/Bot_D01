@@ -41,7 +41,7 @@ namespace Bot_D01.Schedule
                     string pattern = @"Tuần \d+ \(\d{2}/\d{2}/\d{4} đến \d{2}/\d{2}/\d{4}\)";
                     var regex = new Regex(pattern);
 
-                    string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"AppData\config.json");
+                    string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"AppData/config.json");
 
                     string jsonContent = File.ReadAllText(jsonFilePath);
 

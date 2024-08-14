@@ -64,7 +64,7 @@ namespace Bot_D01.Schedule
 
         public static async Task saveTokenAsync(string userId, LoginInfor userTokenInfo)
         {
-            string directoryPath = @"AppData\Users";
+            string directoryPath = @"AppData/Users";
             string filePath = Path.Combine(directoryPath, "listUserInfor.json");
 
             // Tạo thư mục nếu chưa tồn tại
@@ -95,7 +95,7 @@ namespace Bot_D01.Schedule
 
             string jsonString = JsonConvert.SerializeObject(schedule, Formatting.Indented);
 
-            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"AppData\Users");
+            string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"AppData/Users");
 
             if (!Directory.Exists(folderPath))
             {
@@ -108,7 +108,7 @@ namespace Bot_D01.Schedule
         }
         public static string getPath()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"AppData\Users");
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"AppData/Users");
         }
 
         public static async Task<ScheduleResult> GetSchedule(string user)
