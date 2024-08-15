@@ -41,52 +41,62 @@ namespace Bot_D01
             await ctx.CreateResponseAsync(messageBuilder);
         }
 
-        [SlashCommand("reset", "tải lại dữ liệu")]
+        [SlashCommand("reset", "Tải lại dữ liệu")]
         public async Task ResetCommand(InteractionContext ctx)
         {
-            var user = ctx.User;
+            // Gửi phản hồi tạm thời để người dùng biết lệnh đã được nhận
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+                .WithContent("Đang xử lý dữ liệu của bạn. Xin vui lòng chờ..."));
 
-            string path = Path.Combine(Schedule.Utilities.getPath(), "listUserInfor.json");
-
-            string jsonString = File.ReadAllText(path);
-
-            JObject jsonObject = JObject.Parse(jsonString);
-
-            if (jsonObject.ContainsKey($"{user.Username}"))
+            // Thực hiện các thao tác xử lý dữ liệu trong nền
+            _ = Task.Run(async () =>
             {
-                JObject userObject = (JObject)jsonObject[$"{user.Username}"]!;
-
-                LoginInfor loginInfo = userObject.ToObject<LoginInfor>()!;
-
-
-                var filepath = await DataCrawler.Crawl(loginInfo);
-
-                var s = await ScheduleProcessor.ProcessFileAsync(filepath);
-
-                await Schedule.Utilities.saveScheduleAsync($"{user.Username}", s);
-
-                Console.WriteLine("da lam moi du lieu");
-
-                var embed = new DiscordEmbedBuilder
+                try
                 {
-                    Title = $"Hi! {user.Username}",
-                    Description = "Dữ liệu của bạn đã được làm mới.",
-                    Color = DiscordColor.Green,
-                };
+                    var user = ctx.User;
+                    string path = Path.Combine(Schedule.Utilities.getPath(), "listUserInfor.json");
+                    string jsonString = File.ReadAllText(path);
+                    JObject jsonObject = JObject.Parse(jsonString);
 
-                await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
-                    .AddEmbed(embed));
-            }
-            else
-            {
-                DiscordInteractionResponseBuilder modal = ModalBuilder.Create("login_modal")
-                .WithTitle("Dăng nhập DKTC")
-                .AddComponents(new TextInputComponent("Mã sinh viên", "studentid", "DTC123"))
-                .AddComponents(new TextInputComponent("Mật khẩu", "password", "..."))
-                .AddComponents(new TextInputComponent("Gì cũng được", "", "Cứ gửi đi không sao đâu😜!", "", false));
-                await ctx.CreateResponseAsync(InteractionResponseType.Modal, modal);
-            }
+                    if (jsonObject.ContainsKey($"{user.Username}"))
+                    {
+                        JObject userObject = (JObject)jsonObject[$"{user.Username}"]!;
+                        LoginInfor loginInfo = userObject.ToObject<LoginInfor>()!;
+                        var filepath = await DataCrawler.Crawl(loginInfo);
+                        var s = await ScheduleProcessor.ProcessFileAsync(filepath);
+                        await Schedule.Utilities.saveScheduleAsync($"{user.Username}", s);
+
+                        Console.WriteLine("Đã làm mới dữ liệu");
+
+                        var embed = new DiscordEmbedBuilder
+                        {
+                            Title = $"Hi! {user.Username}",
+                            Description = "Dữ liệu của bạn đã được làm mới.",
+                            Color = DiscordColor.Green,
+                        };
+
+                        await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed));
+                    }
+                    else
+                    {
+                        var modal = ModalBuilder.Create("login_modal")
+                            .WithTitle("Đăng nhập DKTC")
+                            .AddComponents(new TextInputComponent("Mã sinh viên", "studentid", "DTC123"))
+                            .AddComponents(new TextInputComponent("Mật khẩu", "password", "..."))
+                            .AddComponents(new TextInputComponent("Gì cũng được", "", "Cứ gửi đi không sao đâu😜!", "", false));
+
+                        await ctx.Channel.SendMessageAsync("Bạn cần đăng nhập trước khi tải lại dữ liệu.");
+                        await ctx.CreateResponseAsync(InteractionResponseType.Modal, modal);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await ctx.Channel.SendMessageAsync($"Đã xảy ra lỗi: {ex.Message}");
+                }
+            });
         }
+
+
 
         [SlashCommand("help", "Xem danh sách các lệnh")]
         public async Task HelpCommand(InteractionContext ctx)
