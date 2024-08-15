@@ -47,7 +47,7 @@ namespace Bot_D01.Schedule
 
                         var responseBytes = await response.Content.ReadAsByteArrayAsync();
 
-                        var folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"AppData\Users");
+                        var folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @$"AppData/Users");
                         var filePath = Path.Combine(folderPath, $"{infor.userName}.xls");
 
                         if (!Directory.Exists(folderPath))
