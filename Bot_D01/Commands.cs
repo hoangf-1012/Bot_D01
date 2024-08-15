@@ -44,11 +44,6 @@ namespace Bot_D01
         [SlashCommand("reset", "Tải lại dữ liệu")]
         public async Task ResetCommand(InteractionContext ctx)
         {
-            // Gửi phản hồi tạm thời để người dùng biết lệnh đã được nhận
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
-                .WithContent("Đang xử lý dữ liệu của bạn. Xin vui lòng chờ..."));
-
-            // Thực hiện các thao tác xử lý dữ liệu trong nền
             _ = Task.Run(async () =>
             {
                 try
@@ -60,14 +55,6 @@ namespace Bot_D01
 
                     if (jsonObject.ContainsKey($"{user.Username}"))
                     {
-                        JObject userObject = (JObject)jsonObject[$"{user.Username}"]!;
-                        LoginInfor loginInfo = userObject.ToObject<LoginInfor>()!;
-                        var filepath = await DataCrawler.Crawl(loginInfo);
-                        var s = await ScheduleProcessor.ProcessFileAsync(filepath);
-                        await Schedule.Utilities.saveScheduleAsync($"{user.Username}", s);
-
-                        Console.WriteLine("Đã làm mới dữ liệu");
-
                         var embed = new DiscordEmbedBuilder
                         {
                             Title = $"Hi! {user.Username}",
@@ -75,7 +62,16 @@ namespace Bot_D01
                             Color = DiscordColor.Green,
                         };
 
-                        await ctx.Channel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed));
+                        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+                            .AddEmbed(embed));
+
+                        JObject userObject = (JObject)jsonObject[$"{user.Username}"]!;
+                        LoginInfor loginInfo = userObject.ToObject<LoginInfor>()!;
+                        var filepath = await DataCrawler.Crawl(loginInfo);
+                        var s = await ScheduleProcessor.ProcessFileAsync(filepath);
+                        await Schedule.Utilities.saveScheduleAsync($"{user.Username}", s);
+
+                        Console.WriteLine("Đã làm mới dữ liệu");
                     }
                     else
                     {
