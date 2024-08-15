@@ -252,11 +252,11 @@ namespace Bot_D01
 
                         if (entry != null)
                         {
+
+
                             embed.AddField(fieldTitle,
                                 string.Join("\n\n", entry.Lessons.Select(lesson =>
-                                    $"{lesson.SubjectName}\n" +
-                                    $"{lesson.timeStart} - {lesson.timeEnd} | " +
-                                    $"{lesson.Address}\n")));
+                                    $"{lesson.SubjectName.Split('(')[0].Trim()} | {lesson.timeStart} - {lesson.timeEnd} | {lesson.Address}\n")));
                         }
                         else
                         {
