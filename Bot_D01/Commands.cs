@@ -45,6 +45,7 @@ namespace Bot_D01
         public async Task ResetCommand(InteractionContext ctx)
         {
             var user = ctx.User;
+
             string path = Path.Combine(Schedule.Utilities.getPath(), "listUserInfor.json");
 
             string jsonString = File.ReadAllText(path);
@@ -64,6 +65,7 @@ namespace Bot_D01
 
                 await Schedule.Utilities.saveScheduleAsync($"{user.Username}", s);
 
+                Console.WriteLine("da lam moi du lieu");
 
                 var embed = new DiscordEmbedBuilder
                 {

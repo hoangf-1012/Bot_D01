@@ -105,6 +105,7 @@ namespace Bot_D01.Schedule
             string jsonFilePath = Path.Combine(folderPath, $"{userId}.json");
 
             File.WriteAllText(jsonFilePath, jsonString);
+            await RemoveExcelFile(Path.Combine(getPath(), $"{schedule.StudentId}.xls"));
         }
         public static string getPath()
         {
