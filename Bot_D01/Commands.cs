@@ -250,7 +250,7 @@ namespace Bot_D01
                     var embed = new DiscordEmbedBuilder
                     {
                         Title = $"Hi {user.Username}!",
-                        Description = "Mai bạn rảnh!",
+                        Description = "Hôm nay bạn rảnh!",
                         Color = DiscordColor.Green
                     };
 
